@@ -1,6 +1,9 @@
 import { authModalState } from '@/atoms/authModal.atom';
+import { takeAuthError } from '@/firebase/errors';
+import { auth } from '@/firebase/firebase.config';
 import { Button, Flex, Input, Text } from '@chakra-ui/react';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { useSetRecoilState } from 'recoil';
 
 type Props = {};
@@ -8,12 +11,18 @@ type Props = {};
 export const LogIn = (props: Props) => {
   const setAuthModalState = useSetRecoilState(authModalState);
 
+  const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
+
   const [loginForm, setLoginForm] = useState({
     email: '',
     password: '',
   });
 
-  const onSubmit = () => {};
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    signInWithEmailAndPassword(loginForm.email, loginForm.password);
+  };
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setLoginForm((prev) => ({
@@ -23,7 +32,7 @@ export const LogIn = (props: Props) => {
   };
 
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <Input
         required
         name='email'
@@ -69,14 +78,41 @@ export const LogIn = (props: Props) => {
         bg='gray.50'
       />
 
+      <Text
+        textAlign='center'
+        fontSize='10pt'
+        color='red'>
+        {error?.code ? `Error: ${takeAuthError(error!.code)}` : null}
+      </Text>
+
       <Button
         width='100%'
         height='36px'
         mt={2}
         mb={2}
-        type='submit'>
+        type='submit'
+        isLoading={loading}>
         Log In
       </Button>
+
+      <Flex
+        justifyContent='center'
+        mb={2}>
+        <Text
+          fontSize='9pt'
+          mr={1}>
+          Forgot your password?
+        </Text>
+        <Text
+          fontSize='9pt'
+          color='blue.500'
+          cursor='pointer'
+          onClick={() =>
+            setAuthModalState({ open: true, view: 'resetPassword' })
+          }>
+          Reset
+        </Text>
+      </Flex>
 
       <Flex
         fontSize='9pt'

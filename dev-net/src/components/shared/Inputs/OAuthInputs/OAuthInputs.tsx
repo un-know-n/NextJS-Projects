@@ -3,8 +3,8 @@ import { Flex } from '@chakra-ui/react';
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { LogIn } from '../LogIn/LogIn';
-import { SignUp } from '../SignUp/SignUp';
+import { LogIn } from './LogIn/LogIn';
+import { SignUp } from './SignUp/SignUp';
 
 type Props = {};
 
