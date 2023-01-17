@@ -1,3 +1,4 @@
+import { auth, firestore } from '@/firebase/firebase.config';
 import {
   Box,
   Button,
@@ -16,7 +17,9 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { doc, runTransaction, serverTimestamp } from 'firebase/firestore';
 import React, { ChangeEvent, FC, useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { BsFillEyeFill, BsFillPersonFill } from 'react-icons/bs';
 import { HiLockClosed } from 'react-icons/hi';
 
@@ -26,19 +29,74 @@ type TProps = {
 };
 
 export const CreateCommunityModal: FC<TProps> = ({ handleClose, isOpen }) => {
-  const [name, setName] = useState('');
+  const [user] = useAuthState(auth);
+  const [communityName, setCommunityName] = useState('');
   const [charsRemaining, setCharsRemaining] = useState(21);
   const [communityType, setCommunityType] = useState('public');
+  const [communityError, setCommunityError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length > 21) return;
 
-    setName(event.target.value);
+    setCommunityName(event.target.value);
     setCharsRemaining(21 - event.target.value.length);
   };
 
   const onCommunityTypeChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCommunityType(event.target.name);
+  };
+
+  const handleCreateCommunity = async () => {
+    if (communityError) setCommunityError('');
+
+    // Validate the community
+
+    const format = /[ `!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
+
+    if (format.test(communityName) || communityName.length < 3) {
+      return setCommunityError(
+        'Community names must be between 3–21 characters, and can only contain letters, numbers, or underscores.',
+      );
+    }
+
+    setLoading(true);
+
+    try {
+      // Create the community document in firestore using transactions
+
+      const communityDocRef = doc(firestore, 'communities', communityName);
+
+      await runTransaction(firestore, async (transaction) => {
+        // Check if the community name is taken
+        const communityDoc = await transaction.get(communityDocRef);
+
+        if (communityDoc.exists())
+          throw new Error(`Sorry, c:${name} is taken. Try another.`);
+
+        //Create the community
+        transaction.set(communityDocRef, {
+          creatorId: user?.uid,
+          createdAt: serverTimestamp(),
+          numberOfMembers: 1,
+          privacyType: communityType,
+        });
+
+        // Update communitySnippet on user
+        transaction.set(
+          doc(firestore, `users/${user?.uid}/communitySnippets`, communityName),
+          {
+            communityId: communityName,
+            isModerator: true,
+          },
+        );
+      });
+    } catch (error: any) {
+      console.log('handleCreateCommunity error', error);
+      setCommunityError(error.message);
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -86,7 +144,7 @@ export const CreateCommunityModal: FC<TProps> = ({ handleClose, isOpen }) => {
             <Input
               position='relative'
               name='name'
-              value={name}
+              value={communityName}
               onChange={handleChange}
               pl='25px'
               size='sm'
@@ -97,7 +155,12 @@ export const CreateCommunityModal: FC<TProps> = ({ handleClose, isOpen }) => {
               pt={2}>
               {charsRemaining} Characters remaining
             </Text>
-
+            <Text
+              fontSize='9pt'
+              color='red'
+              pt={1}>
+              {communityError}
+            </Text>
             <Box
               mt={4}
               mb={4}>
@@ -198,7 +261,9 @@ export const CreateCommunityModal: FC<TProps> = ({ handleClose, isOpen }) => {
           </Button>
           <Button
             variant='solid'
-            height='30px'>
+            height='30px'
+            isLoading={loading}
+            onClick={handleCreateCommunity}>
             Create Community
           </Button>
         </ModalFooter>
