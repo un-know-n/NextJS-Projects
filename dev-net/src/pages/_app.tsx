@@ -2,6 +2,7 @@ import { theme } from '@/chakra/theme';
 import { Layout } from '@/components/layout/Layout';
 import { ChakraProvider } from '@chakra-ui/react';
 import Head from 'next/head';
+import { useEffect } from 'react';
 import { RecoilRoot } from 'recoil';
 
 import type { AppProps } from 'next/app';

@@ -52,7 +52,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   } catch (error) {
-    // Custom page can added here in future
+    // Custom page can be added here in future
     console.log('getServerSideProps community error', error);
   }
 }

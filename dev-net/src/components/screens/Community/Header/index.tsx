@@ -1,6 +1,7 @@
 import { Community } from '@/atoms/communities.atom';
+import { useCommunityData } from '@/hooks/useCommunityData';
 import { Box, Button, Flex, Icon, Image, Text } from '@chakra-ui/react';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { MdOutlineCodeOff } from 'react-icons/md';
 
 type TProps = {
@@ -8,7 +9,13 @@ type TProps = {
 };
 
 export const Header: FC<TProps> = ({ communityData }) => {
-  const isJoined = false;
+  const { communityStateValue, onJoinOrLeaveCommunity, loadingCommunity } =
+    useCommunityData();
+
+  const isJoined =
+    communityStateValue.mySnippets.filter(
+      (community) => community.communityId === communityData.id,
+    ).length > 0;
 
   return (
     <Flex
@@ -63,7 +70,8 @@ export const Header: FC<TProps> = ({ communityData }) => {
               variant={isJoined ? 'outline' : 'solid'}
               height='30px'
               px={6}
-              onClick={() => {}}>
+              isLoading={loadingCommunity}
+              onClick={() => onJoinOrLeaveCommunity(communityData, isJoined)}>
               {isJoined ? 'Joined' : 'Join'}
             </Button>
           </Flex>
