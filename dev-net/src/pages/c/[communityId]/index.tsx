@@ -1,10 +1,13 @@
 import { Community } from '@/atoms/communities.atom';
-import { PageContent } from '@/components/layout/PageContent';
-import { Header } from '@/components/screens/Community/Header';
-import { NotFound } from '@/components/screens/Community/NotFound';
+import { PageContent } from '@/components/layout/PageContent/PageContentLayout';
+import { CreateCommunityPost } from '@/components/screens/Community/CreatePost/CreateCommunityPost';
+import { CommunityHeader } from '@/components/screens/Community/Header/CommunityHeader';
+import { CommunityNotFound } from '@/components/screens/Community/NotFound/CommunityNotFound';
+import { Posts } from '@/components/screens/Community/Posts/Posts';
 import { firestore } from '@/firebase/firebase.config';
 import { doc, getDoc } from 'firebase/firestore';
 import { GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 import React, { FC } from 'react';
 import safeJsonStringify from 'safe-json-stringify';
 
@@ -13,18 +16,20 @@ type TProps = {
 };
 
 const CommunityPage: FC<TProps> = ({ communityData }) => {
-  if (!communityData) return <NotFound />;
+  if (!communityData) return <CommunityNotFound />;
 
   return (
     <>
-      <Header communityData={communityData} />
+      <Head>
+        <title>{communityData.id}</title>
+      </Head>
+      <CommunityHeader communityData={communityData} />
       <PageContent>
         <>
-          <div>LHS</div>
+          <CreateCommunityPost />
+          <Posts communityData={communityData} />
         </>
-        <>
-          <div>RHS</div>
-        </>
+        <></>
       </PageContent>
     </>
   );

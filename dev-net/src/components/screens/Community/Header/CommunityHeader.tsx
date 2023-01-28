@@ -8,7 +8,7 @@ type TProps = {
   communityData: Community;
 };
 
-export const Header: FC<TProps> = ({ communityData }) => {
+export const CommunityHeader: FC<TProps> = ({ communityData }) => {
   const { communityStateValue, onJoinOrLeaveCommunity, loadingCommunity } =
     useCommunityData();
 

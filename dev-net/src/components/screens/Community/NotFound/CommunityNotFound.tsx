@@ -2,6 +2,6 @@ import React, { FC } from 'react';
 
 type TProps = {};
 
-export const NotFound: FC = () => {
+export const CommunityNotFound: FC = () => {
   return <div>NotFound</div>;
 };

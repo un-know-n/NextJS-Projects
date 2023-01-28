@@ -1,9 +1,34 @@
+import { PageContent } from '@/components/layout/PageContent/PageContentLayout';
+import { NewPostForm } from '@/components/screens/Community/NewPostForm/NewPostForm';
+import { auth } from '@/firebase/firebase.config';
+import { Box, Text } from '@chakra-ui/react';
+import Head from 'next/head';
 import React from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 type Props = {};
 
-const submit = (props: Props) => {
-  return <div>submit</div>;
+const SubmitPostPage = (props: Props) => {
+  const [user] = useAuthState(auth);
+  return (
+    <>
+      <Head>
+        <title>Create a post</title>
+      </Head>
+      <PageContent>
+        <>
+          <Box
+            p='14px 0px'
+            borderBottom='1px solid'
+            borderColor='white'>
+            <Text>Create a post</Text>
+          </Box>
+          {user && <NewPostForm user={user} />}
+        </>
+        <></>
+      </PageContent>
+    </>
+  );
 };
 
-export default submit;
+export default SubmitPostPage;
