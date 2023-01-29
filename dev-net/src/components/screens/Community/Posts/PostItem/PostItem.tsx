@@ -1,7 +1,20 @@
 import { Post } from '@/atoms/posts.atom';
-import { Flex, Icon, Image, Skeleton, Stack, Text } from '@chakra-ui/react';
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  CloseButton,
+  Flex,
+  Icon,
+  Image,
+  Skeleton,
+  Spinner,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import error from 'next/error';
 import React, { FC, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BsChat } from 'react-icons/bs';
@@ -19,7 +32,7 @@ type TProps = {
   createdByCurrentUser: boolean;
   userVoteValue?: number;
   onVote: () => void;
-  onDeletePost: () => void;
+  onDeletePost: (post: Post) => Promise<boolean>;
   onSelectPost: () => void;
 };
 
@@ -34,13 +47,28 @@ export const PostItem: FC<TProps> = ({
   userVoteValue,
 }) => {
   const [loadingImage, setLoadingImage] = useState(true);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+  const [postError, setPostError] = useState(false);
+
+  const handleDelete = async () => {
+    setLoadingDelete(true);
+    try {
+      const success = await onDeletePost(post);
+      if (!success) throw new Error('Failed to delete post');
+    } catch (error) {
+      console.log('handleDeletePost error', error);
+      setPostError(true);
+    }
+    setLoadingDelete(false);
+  };
+
   return (
     <Flex
       border='1px solid'
       bg='white'
       borderColor='gray.300'
       borderRadius={4}
-      mb={4}
+      my={2}
       _hover={{ borderColor: 'gray.300' }}
       cursor='pointer'
       onClick={onSelectPost}>
@@ -74,6 +102,21 @@ export const PostItem: FC<TProps> = ({
       <Flex
         direction='column'
         width='100%'>
+        {postError ? (
+          <Alert
+            status='error'
+            display='flex'
+            justifyContent='space-between'
+            width='100%'>
+            <Flex>
+              <AlertIcon />
+              <AlertDescription>
+                Error ocurred during post deletion!
+              </AlertDescription>
+            </Flex>
+            <CloseButton onClick={() => setPostError((prev) => !prev)} />
+          </Alert>
+        ) : null}
         <Stack
           spacing={1}
           p='10px'>
@@ -118,7 +161,6 @@ export const PostItem: FC<TProps> = ({
         </Stack>
         <Flex
           ml={1}
-          mb={0.5}
           color='gray.500'>
           <Flex
             align='center'
@@ -163,12 +205,18 @@ export const PostItem: FC<TProps> = ({
               borderRadius={4}
               _hover={{ bg: 'gray.200' }}
               cursor='pointer'
-              onClick={onDeletePost}>
-              <Icon
-                as={AiOutlineDelete}
-                mr={2}
-              />
-              <Text fontSize='9pt'>Delete</Text>
+              onClick={handleDelete}>
+              {loadingDelete ? (
+                <Spinner size='sm' />
+              ) : (
+                <>
+                  <Icon
+                    as={AiOutlineDelete}
+                    mr={2}
+                  />
+                  <Text fontSize='9pt'>Delete</Text>
+                </>
+              )}
             </Flex>
           ) : null}
         </Flex>
