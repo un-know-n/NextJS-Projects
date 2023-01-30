@@ -1,5 +1,6 @@
-import { Community } from '@/atoms/communities.atom';
+import { Community, communityState } from '@/atoms/communities.atom';
 import { PageContent } from '@/components/layout/PageContent/PageContentLayout';
+import { AboutCommunity } from '@/components/screens/Community/About/About';
 import { CreateCommunityPost } from '@/components/screens/Community/CreatePost/CreateCommunityPost';
 import { CommunityHeader } from '@/components/screens/Community/Header/CommunityHeader';
 import { CommunityNotFound } from '@/components/screens/Community/NotFound/CommunityNotFound';
@@ -8,7 +9,8 @@ import { firestore } from '@/firebase/firebase.config';
 import { doc, getDoc } from 'firebase/firestore';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
+import { useSetRecoilState } from 'recoil';
 import safeJsonStringify from 'safe-json-stringify';
 
 type TProps = {
@@ -16,6 +18,16 @@ type TProps = {
 };
 
 const CommunityPage: FC<TProps> = ({ communityData }) => {
+  const setCurrentCommunity = useSetRecoilState(communityState);
+
+  useEffect(() => {
+    if (communityData)
+      setCurrentCommunity((prev) => ({
+        ...prev,
+        currentCommunity: communityData,
+      }));
+  }, []);
+
   if (!communityData) return <CommunityNotFound />;
 
   return (
@@ -29,7 +41,9 @@ const CommunityPage: FC<TProps> = ({ communityData }) => {
           <CreateCommunityPost />
           <Posts communityData={communityData} />
         </>
-        <></>
+        <>
+          <AboutCommunity communityData={communityData} />
+        </>
       </PageContent>
     </>
   );

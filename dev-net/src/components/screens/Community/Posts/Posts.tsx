@@ -42,7 +42,6 @@ export const Posts: FC<TProps> = ({ communityData }) => {
         ...doc.data(),
       }));
 
-      console.log('Your posts --->', posts);
       setPostStateValue((prev) => ({
         ...prev,
         posts: posts as Post[],
