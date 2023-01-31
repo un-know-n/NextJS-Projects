@@ -33,10 +33,16 @@ export const CommunityHeader: FC<TProps> = ({ communityData }) => {
         <Flex
           width='95%'
           maxWidth='860px'>
-          {communityData.photoURL ? (
+          {communityStateValue.currentCommunity?.photoURL ? (
             <Image
-              src={communityData.photoURL}
-              alt={communityData.id}
+              src={communityStateValue.currentCommunity.photoURL}
+              alt={communityStateValue.currentCommunity.id}
+              position='relative'
+              top={-3}
+              boxSize='64px'
+              borderRadius='full'
+              fit='cover'
+              border='3px solid white'
             />
           ) : (
             <Icon

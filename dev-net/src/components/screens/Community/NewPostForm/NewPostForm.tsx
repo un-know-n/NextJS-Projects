@@ -1,7 +1,8 @@
 import { Post } from '@/atoms/posts.atom';
 import { firestore, storage } from '@/firebase/firebase.config';
 import { takeUserName } from '@/helpers/takeUserName';
-import { Alert, AlertDescription, AlertIcon, CloseButton, Flex, Icon, useDisclosure } from '@chakra-ui/react';
+import { useSelectFile } from '@/hooks/useSelectFile';
+import { Alert, AlertDescription, AlertIcon, CloseButton, Flex, Icon } from '@chakra-ui/react';
 import { User } from 'firebase/auth';
 import { addDoc, collection, serverTimestamp, Timestamp, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
@@ -49,13 +50,13 @@ export type TTabItem = {
 
 export const NewPostForm: FC<TProps> = ({ user }) => {
   const router = useRouter();
-  const { onClose } = useDisclosure({ defaultIsOpen: false });
+  const { onSelectFile, selectedFile, setSelectedFile } = useSelectFile();
+
   const [selectedTab, setSelectedTab] = useState(formTabs[0].title);
   const [textValues, setTextValues] = useState({
     title: '',
     body: '',
   });
-  const [selectedFile, setSelectedFile] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -103,23 +104,6 @@ export const NewPostForm: FC<TProps> = ({ user }) => {
     setLoading(false);
   };
 
-  const onSelectMedia = (event: ChangeEvent<HTMLInputElement>) => {
-    const reader = new FileReader();
-
-    // Check if file is uploaded
-    if (event.target.files?.[0]) {
-      // Read the url of the file
-      reader.readAsDataURL(event.target.files[0]);
-    }
-
-    // When reader loaded the info and if it is successful, write it to local state
-    reader.onload = (readerEvent) => {
-      if (readerEvent.target?.result) {
-        setSelectedFile(readerEvent.target.result as string);
-      }
-    };
-  };
-
   const onTextChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -163,7 +147,7 @@ export const NewPostForm: FC<TProps> = ({ user }) => {
         {selectedTab === 'Images & Video' ? (
           <ImageUpload
             selectedFile={selectedFile}
-            onSelectImage={onSelectMedia}
+            onSelectImage={onSelectFile}
             setSelectedFile={setSelectedFile}
             setSelectedTab={setSelectedTab}
           />
