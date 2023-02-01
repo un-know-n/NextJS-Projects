@@ -67,6 +67,10 @@ export const Posts: FC<TProps> = ({ communityData }) => {
               createdByCurrentUser={user?.uid === post.creatorId}
               onDeletePost={onDeletePost}
               onSelectPost={onSelectPost}
+              userVoteValue={
+                postStateValue.postVotes.find((vote) => post.id === vote.postId)
+                  ?.postVote
+              }
               onVote={onVote}
               post={post}
               key={post.id}
