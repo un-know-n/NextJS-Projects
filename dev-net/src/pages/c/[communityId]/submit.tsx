@@ -1,8 +1,8 @@
 import { communityState } from '@/atoms/communities.atom';
 import { PageContent } from '@/components/layout/PageContent/PageContentLayout';
+import { AboutCommunity } from '@/components/screens/Community/About/About';
 import { NewPostForm } from '@/components/screens/Community/NewPostForm/NewPostForm';
 import { auth } from '@/firebase/firebase.config';
-import { Box, Text } from '@chakra-ui/react';
 import Head from 'next/head';
 import React from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -20,16 +20,12 @@ const SubmitPostPage = (props: Props) => {
         <title>Create a post</title>
       </Head>
       <PageContent>
+        <>{user && <NewPostForm user={user} />}</>
         <>
-          <Box
-            p='14px 0px'
-            borderBottom='1px solid'
-            borderColor='white'>
-            <Text>Create a post</Text>
-          </Box>
-          {user && <NewPostForm user={user} />}
+          {currentCommunity ? (
+            <AboutCommunity communityData={currentCommunity} />
+          ) : null}
         </>
-        <>{/* <AboutCommunity communityData={currentCommunity} /> */}</>
       </PageContent>
     </>
   );

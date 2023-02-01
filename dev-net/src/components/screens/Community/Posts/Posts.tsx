@@ -47,7 +47,7 @@ export const Posts: FC<TProps> = ({ communityData }) => {
         posts: posts as Post[],
       }));
     } catch (error: any) {
-      console.log('getPosts error', error.message);
+      console.log('getPosts error', error);
     }
     setLoading(false);
   };

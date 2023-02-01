@@ -99,7 +99,7 @@ export const NewPostForm: FC<TProps> = ({ user }) => {
       // Redirect the use to the community page
       router.back();
     } catch (error: any) {
-      console.log('handleCreatePost error', error.message);
+      console.log('handleCreatePost error', error);
     }
     setLoading(false);
   };
@@ -123,8 +123,7 @@ export const NewPostForm: FC<TProps> = ({ user }) => {
       direction='column'
       bg='white'
       borderRadius={5}
-      overflow='hidden'
-      mt={2}>
+      overflow='hidden'>
       <Flex width='100%'>
         {formTabs.map((item) => (
           <TabItem

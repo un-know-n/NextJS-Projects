@@ -1,17 +1,20 @@
 import { authModalState } from '@/atoms/authModal.atom';
-import { communityState } from '@/atoms/communities.atom';
+import { Community, communityState } from '@/atoms/communities.atom';
 import { Post, postState, PostVote } from '@/atoms/posts.atom';
 import { auth, firestore, storage } from '@/firebase/firebase.config';
-import { collection, deleteDoc, doc, getDocs, query, where, writeBatch } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, query, where, writeBatch } from 'firebase/firestore';
 import { deleteObject, ref } from 'firebase/storage';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 export const usePosts = () => {
   const [user] = useAuthState(auth);
+  const router = useRouter();
   const setModalState = useSetRecoilState(authModalState);
-  const { currentCommunity } = useRecoilValue(communityState);
+  const [communityStateValue, setCommunityStateValue] =
+    useRecoilState(communityState);
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
 
   const onVote = async (post: Post, vote: number, communityId: string) => {
@@ -122,12 +125,25 @@ export const usePosts = () => {
         posts: updatedPosts,
         postVotes: updatedPostVotes,
       }));
+
+      if (postStateValue.selectedPost?.id === post.id) {
+        setPostStateValue((prev) => ({
+          ...prev,
+          selectedPost: updatedPost,
+        }));
+      }
     } catch (error) {
       console.log('onVote error', error);
     }
   };
 
-  const onSelectPost = () => {};
+  const onSelectPost = (post: Post) => {
+    setPostStateValue((prev) => ({
+      ...prev,
+      selectedPost: post,
+    }));
+    router.push(`/c/${post.communityId}/comments/${post.id}`);
+  };
 
   const onDeletePost = async (post: Post): Promise<boolean> => {
     try {
@@ -154,7 +170,7 @@ export const usePosts = () => {
   };
 
   const getCommunityPostVotes = async (communityId: string) => {
-    // Make the query to sort the output data from firebase(query)
+    // Make the query to sort the output data from firebase
     const postVotesQuery = query(
       collection(firestore, 'users', `${user?.uid}/postVotes`),
       where('communityId', '==', communityId),
@@ -173,12 +189,39 @@ export const usePosts = () => {
     }));
   };
 
-  useEffect(() => {
-    if (!user || !currentCommunity?.id) return;
-    getCommunityPostVotes(currentCommunity.id);
-  }, [user, currentCommunity]);
+  const getCommunityData = async (communityId: string) => {
+    try {
+      // Take the community from the firebase
+      const communityDocRef = doc(firestore, 'communities', communityId);
+      const communityDoc = await getDoc(communityDocRef);
 
-  // Clear the postVotes whel logout
+      // Set it all to the local storage
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        currentCommunity: {
+          id: communityDoc.id,
+          ...communityDoc.data(),
+        } as Community,
+      }));
+    } catch (error) {
+      console.log('getCommunityData error', error);
+    }
+  };
+
+  // Set the information about current community if there is none
+  useEffect(() => {
+    if (!communityStateValue.currentCommunity && router.query.communityId) {
+      getCommunityData(router.query.communityId as string);
+    }
+  }, [communityStateValue.currentCommunity, router.query.communityId]);
+
+  // When user or currComm changes -> take the user votes
+  useEffect(() => {
+    if (!user || !communityStateValue.currentCommunity?.id) return;
+    getCommunityPostVotes(communityStateValue.currentCommunity.id);
+  }, [user, communityStateValue.currentCommunity]);
+
+  // Clear the postVotes when logout
   useEffect(() => {
     if (!user) {
       setPostStateValue((prev) => ({

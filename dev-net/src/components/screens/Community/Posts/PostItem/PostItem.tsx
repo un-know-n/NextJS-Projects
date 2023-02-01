@@ -15,7 +15,8 @@ import {
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import error from 'next/error';
-import React, { FC, useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { FC, MouseEvent, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BsChat } from 'react-icons/bs';
 import {
@@ -33,7 +34,7 @@ type TProps = {
   userVoteValue?: number;
   onVote: (post: Post, vote: number, communityId: string) => {};
   onDeletePost: (post: Post) => Promise<boolean>;
-  onSelectPost: () => void;
+  onSelectPost?: (post: Post) => void;
 };
 
 dayjs.extend(relativeTime);
@@ -46,11 +47,15 @@ export const PostItem: FC<TProps> = ({
   onVote,
   userVoteValue,
 }) => {
+  const router = useRouter();
   const [loadingImage, setLoadingImage] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [postError, setPostError] = useState(false);
+  const singlePostPage = !onSelectPost;
 
-  const handleDelete = async () => {
+  const handleDelete = async (event: MouseEvent) => {
+    event.stopPropagation();
+
     setLoadingDelete(true);
     try {
       const success = await onDeletePost(post);
@@ -60,34 +65,42 @@ export const PostItem: FC<TProps> = ({
       setPostError(true);
     }
     setLoadingDelete(false);
+
+    if (singlePostPage) router.push(`/c/${post.communityId}`);
+  };
+
+  const stopPropagationOnClick = (event: MouseEvent) => {
+    event.stopPropagation();
   };
 
   return (
     <Flex
       border='1px solid'
       bg='white'
-      borderColor='gray.300'
-      borderRadius={4}
+      borderColor={singlePostPage ? 'white' : 'gray.300'}
+      borderRadius={singlePostPage ? '4px 4px 0px 0px' : 4}
       my={2}
-      _hover={{ borderColor: 'gray.300' }}
-      cursor='pointer'
-      onClick={onSelectPost}>
+      _hover={{ borderColor: singlePostPage ? 'none' : 'gray.500' }}
+      cursor={singlePostPage ? 'unset' : 'pointer'}
+      onClick={() => onSelectPost && onSelectPost(post)}>
       <Flex
         direction='column'
         align='center'
-        bg='gray.100'
-        p={2}
+        bg={singlePostPage ? 'none' : 'gray.100'}
+        p={singlePostPage ? '10px 0px 10px 10px' : 2}
         width='40px'
-        borderRadius={4}>
+        borderRadius={singlePostPage ? 0 : '4px 0px 0px 4px'}
+        onClick={stopPropagationOnClick}>
         <Icon
           as={
             userVoteValue === 1 ? IoArrowUpCircleSharp : IoArrowUpCircleOutline
           }
           color={userVoteValue === 1 ? 'green.400' : 'gray.400'}
+          cursor='pointer'
           fontSize={22}
           onClick={() => onVote(post, 1, post.communityId)}
         />
-        <Text>{post.voteStatus}</Text>
+        <Text fontWeight={600}>{post.voteStatus}</Text>
         <Icon
           as={
             userVoteValue === -1
@@ -95,6 +108,7 @@ export const PostItem: FC<TProps> = ({
               : IoArrowDownCircleOutline
           }
           color={userVoteValue === -1 ? 'red.400' : 'gray.400'}
+          cursor='pointer'
           fontSize={22}
           onClick={() => onVote(post, -1, post.communityId)}
         />
@@ -179,7 +193,8 @@ export const PostItem: FC<TProps> = ({
             p='8px 10px'
             borderRadius={4}
             _hover={{ bg: 'gray.200' }}
-            cursor='pointer'>
+            cursor='pointer'
+            onClick={stopPropagationOnClick}>
             <Icon
               as={IoArrowRedoOutline}
               mr={2}
@@ -191,7 +206,8 @@ export const PostItem: FC<TProps> = ({
             p='8px 10px'
             borderRadius={4}
             _hover={{ bg: 'gray.200' }}
-            cursor='pointer'>
+            cursor='pointer'
+            onClick={stopPropagationOnClick}>
             <Icon
               as={IoBookmarkOutline}
               mr={2}
