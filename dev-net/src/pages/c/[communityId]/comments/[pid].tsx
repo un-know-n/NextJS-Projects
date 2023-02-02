@@ -2,6 +2,7 @@ import { communityState } from '@/atoms/communities.atom';
 import { Post } from '@/atoms/posts.atom';
 import { PageContent } from '@/components/layout/PageContent/PageContentLayout';
 import { AboutCommunity } from '@/components/screens/Community/About/About';
+import { PostComments } from '@/components/screens/Community/Posts/Comments/Comments';
 import { PostItem } from '@/components/screens/Community/Posts/PostItem/PostItem';
 import { auth, firestore } from '@/firebase/firebase.config';
 import { usePosts } from '@/hooks/usePosts';
@@ -66,6 +67,13 @@ const PostPage = () => {
                 )?.postVote
               }
               post={postStateValue.selectedPost}
+            />
+          ) : null}
+          {user && currentCommunity?.id ? (
+            <PostComments
+              communityId={currentCommunity?.id}
+              selectedPost={postStateValue.selectedPost}
+              user={user}
             />
           ) : null}
         </>

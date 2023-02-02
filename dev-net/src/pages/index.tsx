@@ -1,3 +1,4 @@
+import { PageContent } from '@/components/layout/PageContent/PageContentLayout';
 import Head from 'next/head';
 
 export default function Home() {
@@ -6,7 +7,14 @@ export default function Home() {
       <Head>
         <title>DevNet</title>
       </Head>
-      <div>Home</div>
+      <PageContent>
+        <>
+          <div>Home</div>
+        </>
+        <>
+          <div>Home</div>
+        </>
+      </PageContent>
     </>
   );
 }

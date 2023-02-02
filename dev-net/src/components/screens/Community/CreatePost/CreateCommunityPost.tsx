@@ -33,8 +33,7 @@ export const CreateCommunityPost: FC = () => {
       borderRadius={4}
       border='1px solid'
       borderColor='gray.300'
-      p={2}
-      mb={2}>
+      p={2}>
       <Icon
         as={AiOutlineCode}
         fontSize={36}

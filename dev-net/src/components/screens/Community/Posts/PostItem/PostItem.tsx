@@ -79,7 +79,7 @@ export const PostItem: FC<TProps> = ({
       bg='white'
       borderColor={singlePostPage ? 'white' : 'gray.300'}
       borderRadius={singlePostPage ? '4px 4px 0px 0px' : 4}
-      my={2}
+      mt={singlePostPage ? 0 : 4}
       _hover={{ borderColor: singlePostPage ? 'none' : 'gray.500' }}
       cursor={singlePostPage ? 'unset' : 'pointer'}
       onClick={() => onSelectPost && onSelectPost(post)}>
