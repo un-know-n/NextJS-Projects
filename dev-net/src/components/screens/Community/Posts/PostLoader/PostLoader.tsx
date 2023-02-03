@@ -5,7 +5,9 @@ type TProps = {};
 
 export const PostLoader: FC<TProps> = ({}) => {
   return (
-    <Stack spacing={6}>
+    <Stack
+      spacing={6}
+      mt={4}>
       <Box
         padding='10px 10px'
         boxShadow='lg'

@@ -54,7 +54,7 @@ export const Posts: FC<TProps> = ({ communityData }) => {
 
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [communityData]);
 
   return (
     <>

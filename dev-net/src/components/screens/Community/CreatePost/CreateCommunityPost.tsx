@@ -1,5 +1,6 @@
 import { authModalState } from '@/atoms/authModal.atom';
 import { auth } from '@/firebase/firebase.config';
+import { useDirectory } from '@/hooks/useDirectory';
 import { Flex, Icon, Input } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
@@ -14,6 +15,8 @@ export const CreateCommunityPost: FC = () => {
   const [user] = useAuthState(auth);
   const setAuthModalState = useSetRecoilState(authModalState);
 
+  const { toggleMenu } = useDirectory();
+
   const handleCreatePost = () => {
     if (!user) {
       setAuthModalState({ open: true, view: 'login' });
@@ -21,6 +24,8 @@ export const CreateCommunityPost: FC = () => {
     }
 
     const { communityId } = router.query;
+
+    if (!communityId) toggleMenu();
     router.push(`/c/${communityId}/submit`);
   };
 

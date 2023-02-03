@@ -26,7 +26,7 @@ const CommunityPage: FC<TProps> = ({ communityData }) => {
         ...prev,
         currentCommunity: communityData,
       }));
-  }, []);
+  }, [communityData]);
 
   if (!communityData) return <CommunityNotFound />;
 

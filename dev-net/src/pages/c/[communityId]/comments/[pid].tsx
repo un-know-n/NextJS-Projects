@@ -1,22 +1,23 @@
-import { communityState } from '@/atoms/communities.atom';
 import { Post } from '@/atoms/posts.atom';
 import { PageContent } from '@/components/layout/PageContent/PageContentLayout';
 import { AboutCommunity } from '@/components/screens/Community/About/About';
 import { PostComments } from '@/components/screens/Community/Posts/Comments/Comments';
 import { PostItem } from '@/components/screens/Community/Posts/PostItem/PostItem';
 import { auth, firestore } from '@/firebase/firebase.config';
+import { useCommunityData } from '@/hooks/useCommunityData';
 import { usePosts } from '@/hooks/usePosts';
 import { doc, getDoc } from 'firebase/firestore';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useRecoilValue } from 'recoil';
 
 const PostPage = () => {
   const { postStateValue, setPostStateValue, onDeletePost, onVote } =
     usePosts();
-  const { currentCommunity } = useRecoilValue(communityState);
+  const currentCommunity =
+    useCommunityData().communityStateValue.currentCommunity;
+
   const [user] = useAuthState(auth);
   const router = useRouter();
 
