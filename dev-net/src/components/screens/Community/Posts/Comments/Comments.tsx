@@ -36,7 +36,7 @@ export const PostComments: FC<TProps> = ({
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentLoading, setCommentLoading] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteOnPost, setDeleteOnPost] = useState('');
   const [fetchLoading, setFetchLoading] = useState(false);
 
   const onCreateComment = async () => {
@@ -86,17 +86,34 @@ export const PostComments: FC<TProps> = ({
   };
 
   const onDeleteComment = async (comment: Comment) => {
-    setDeleteLoading(true);
+    setDeleteOnPost(comment.id);
     try {
       const batch = writeBatch(firestore);
       // Delete a comment document
+      const commentDocRef = doc(firestore, 'comments', comment.id);
+      batch.delete(commentDocRef);
+
       // Decrease a number of comments in post document
+      const postDocRef = doc(firestore, 'posts', selectedPost.id);
+      batch.update(postDocRef, {
+        numberOfComments: increment(-1),
+      });
+
       await batch.commit();
+
+      // Update client recoil state
+      setComments(comments.filter((item) => item.id !== comment.id));
+      setPostState((prev) => ({
+        ...prev,
+        selectedPost: {
+          ...prev.selectedPost,
+          numberOfComments: prev.selectedPost?.numberOfComments! - 1,
+        } as Post,
+      }));
     } catch (error) {
       console.log('onDeleteComment error', error);
     }
-    setDeleteLoading(false);
-    // Update client recoil state
+    setDeleteOnPost('');
   };
 
   const getPostComments = async () => {
@@ -183,7 +200,7 @@ export const PostComments: FC<TProps> = ({
               comments.map((comment) => (
                 <CommentItem
                   comment={comment}
-                  loadingDelete={deleteLoading}
+                  loadingDelete={deleteOnPost === comment.id}
                   onDeleteComment={onDeleteComment}
                   userId={user.uid}
                   key={comment.id}
