@@ -3,7 +3,10 @@ import dayjs from 'dayjs';
 import { Timestamp } from 'firebase/firestore';
 import React, { FC } from 'react';
 import { AiOutlineCode } from 'react-icons/ai';
-import { IoArrowDownCircleOutline, IoArrowUpCircleOutline } from 'react-icons/io5';
+import {
+  IoArrowDownCircleOutline,
+  IoArrowUpCircleOutline,
+} from 'react-icons/io5';
 
 export type Comment = {
   id: string;
@@ -20,7 +23,7 @@ type TProps = {
   comment: Comment;
   onDeleteComment: (comment: Comment) => void;
   loadingDelete: boolean;
-  userId: string;
+  userId?: string;
 };
 
 export const CommentItem: FC<TProps> = ({

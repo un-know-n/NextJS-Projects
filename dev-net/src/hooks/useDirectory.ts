@@ -1,5 +1,9 @@
 import { communityState } from '@/atoms/communities.atom';
-import { DirectoryMenuItem, directoryMenuState } from '@/atoms/directoryMenu.atom';
+import {
+  defaultMenuItem,
+  DirectoryMenuItem,
+  directoryMenuState,
+} from '@/atoms/directoryMenu.atom';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { MdOutlineCodeOff } from 'react-icons/md';
@@ -17,6 +21,10 @@ export const useDirectory = () => {
       selectedMenuItem: menuItem,
     }));
 
+    if (menuItem.communityName === defaultMenuItem.communityName) {
+      router.push(menuItem.link);
+      return;
+    }
     router.push(`/c/${menuItem.communityName}`);
 
     if (directoryState.isOpen) toggleMenu();

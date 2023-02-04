@@ -6,7 +6,7 @@ import React, { FC } from 'react';
 type TProps = {
   commentText: string;
   setCommentText: (value: string) => void;
-  user: User;
+  user?: User | null;
   createLoading: boolean;
   onCreateComment: (commentText: string) => void;
 };

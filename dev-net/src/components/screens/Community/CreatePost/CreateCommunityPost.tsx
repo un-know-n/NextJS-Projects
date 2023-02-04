@@ -25,7 +25,10 @@ export const CreateCommunityPost: FC = () => {
 
     const { communityId } = router.query;
 
-    if (!communityId) toggleMenu();
+    if (!communityId) {
+      toggleMenu();
+      return;
+    }
     router.push(`/c/${communityId}/submit`);
   };
 

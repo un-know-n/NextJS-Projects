@@ -2,7 +2,16 @@ import { authModalState } from '@/atoms/authModal.atom';
 import { Community, communityState } from '@/atoms/communities.atom';
 import { Post, postState, PostVote } from '@/atoms/posts.atom';
 import { auth, firestore, storage } from '@/firebase/firebase.config';
-import { collection, deleteDoc, doc, getDoc, getDocs, query, where, writeBatch } from 'firebase/firestore';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  writeBatch,
+} from 'firebase/firestore';
 import { deleteObject, ref } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -195,7 +204,7 @@ export const usePosts = () => {
       const communityDocRef = doc(firestore, 'communities', communityId);
       const communityDoc = await getDoc(communityDocRef);
 
-      // Set it all to the local storage
+      // Set it all to the local state
       setCommunityStateValue((prev) => ({
         ...prev,
         currentCommunity: {

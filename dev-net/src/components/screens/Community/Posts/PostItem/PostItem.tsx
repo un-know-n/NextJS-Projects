@@ -15,10 +15,11 @@ import {
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import error from 'next/error';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC, MouseEvent, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
-import { BsChat } from 'react-icons/bs';
+import { BsChat, BsDot } from 'react-icons/bs';
 import {
   IoArrowDownCircleOutline,
   IoArrowDownCircleSharp,
@@ -27,6 +28,7 @@ import {
   IoArrowUpCircleSharp,
   IoBookmarkOutline,
 } from 'react-icons/io5';
+import { MdOutlineCodeOff } from 'react-icons/md';
 
 type TProps = {
   post: Post;
@@ -35,6 +37,7 @@ type TProps = {
   onVote: (post: Post, vote: number, communityId: string) => {};
   onDeletePost: (post: Post) => Promise<boolean>;
   onSelectPost?: (post: Post) => void;
+  homePage?: boolean;
 };
 
 dayjs.extend(relativeTime);
@@ -46,6 +49,7 @@ export const PostItem: FC<TProps> = ({
   onSelectPost,
   onVote,
   userVoteValue,
+  homePage,
 }) => {
   const router = useRouter();
   const [loadingImage, setLoadingImage] = useState(true);
@@ -139,7 +143,40 @@ export const PostItem: FC<TProps> = ({
             spacing={0.6}
             align='center'
             fontSize='9pt'>
-            {/* Check if on the homepage */}
+            {homePage ? (
+              <>
+                {post.communityImageURL ? (
+                  <Image
+                    src={post.communityImageURL}
+                    alt='Community image'
+                    borderRadius='full'
+                    boxSize='18px'
+                    mr={2}
+                  />
+                ) : (
+                  <Icon
+                    as={MdOutlineCodeOff}
+                    fontSize='18pt'
+                    mr={1}
+                    color='brand.100'
+                  />
+                )}
+                <Link
+                  href={`/c/${post.communityId}`}
+                  onClick={(event) => event.stopPropagation()}>
+                  <Text
+                    fontWeight={700}
+                    _hover={{
+                      textDecoration: 'underline',
+                    }}>{`c:${post.communityId}`}</Text>
+                </Link>
+                <Icon
+                  as={BsDot}
+                  color='gray.500'
+                  fontSize={8}
+                />
+              </>
+            ) : null}
             <Text>
               Posted by u:{post.creatorDisplayName}{' '}
               {dayjs(post.createdAt.seconds * 1000).fromNow()}

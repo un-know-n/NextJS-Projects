@@ -1,7 +1,14 @@
 import { Post, postState } from '@/atoms/posts.atom';
 import { firestore } from '@/firebase/firebase.config';
 import { takeUserName } from '@/helpers/takeUserName';
-import { Box, Flex, SkeletonCircle, SkeletonText, Stack, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  SkeletonCircle,
+  SkeletonText,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 import { User } from 'firebase/auth';
 import {
   collection,
@@ -22,7 +29,7 @@ import { Comment, CommentItem } from './Comment/CommentItem';
 import { CommentsInput } from './Input/CommentsInput';
 
 type TProps = {
-  user: User;
+  user?: User | null;
   selectedPost: Post;
   communityId: string;
 };
@@ -48,8 +55,8 @@ export const PostComments: FC<TProps> = ({
 
       const newComment: Comment = {
         id: commentDocRef.id,
-        creatorId: user.uid,
-        creatorDisplayName: takeUserName(user),
+        creatorId: user?.uid!,
+        creatorDisplayName: takeUserName(user!),
         communityId: communityId,
         postId: selectedPost.id,
         postTitle: selectedPost.title,
@@ -202,7 +209,7 @@ export const PostComments: FC<TProps> = ({
                   comment={comment}
                   loadingDelete={deleteOnPost === comment.id}
                   onDeleteComment={onDeleteComment}
-                  userId={user.uid}
+                  userId={user?.uid}
                   key={comment.id}
                 />
               ))

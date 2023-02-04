@@ -1,11 +1,21 @@
 import { authModalState } from '@/atoms/authModal.atom';
 import { auth, firestore } from '@/firebase/firebase.config';
-import { collection, doc, getDocs, increment, writeBatch } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDocs,
+  increment,
+  writeBatch,
+} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
-import { Community, CommunitySnippet, communityState } from '../atoms/communities.atom';
+import {
+  Community,
+  CommunitySnippet,
+  communityState,
+} from '../atoms/communities.atom';
 
 export const useCommunityData = () => {
   const [communityStateValue, setCommunityStateValue] =
@@ -28,6 +38,7 @@ export const useCommunityData = () => {
       setCommunityStateValue((prev) => ({
         ...prev,
         mySnippets: snippets as CommunitySnippet[],
+        snippetsFetched: true,
       }));
     } catch (error: any) {
       console.log('getMySnippets error', error);
@@ -126,6 +137,7 @@ export const useCommunityData = () => {
       setCommunityStateValue((prev) => ({
         ...prev,
         mySnippets: [],
+        snippetsFetched: false,
       }));
       return;
     }

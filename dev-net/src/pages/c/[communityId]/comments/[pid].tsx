@@ -27,7 +27,7 @@ const PostPage = () => {
       const postDocRef = doc(firestore, 'posts', postId);
       const postDocument = await getDoc(postDocRef);
 
-      // Take it and set to local storage
+      // Take it and set to local state
       const post = {
         id: postDocument.id,
         ...postDocument.data(),
@@ -70,7 +70,7 @@ const PostPage = () => {
               post={postStateValue.selectedPost}
             />
           ) : null}
-          {user && currentCommunity?.id ? (
+          {currentCommunity?.id ? (
             <PostComments
               communityId={currentCommunity?.id}
               selectedPost={postStateValue.selectedPost}

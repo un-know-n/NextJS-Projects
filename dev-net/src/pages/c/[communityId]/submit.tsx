@@ -20,7 +20,14 @@ const SubmitPostPage = (props: Props) => {
         <title>Create a post</title>
       </Head>
       <PageContent>
-        <>{user && <NewPostForm user={user} />}</>
+        <>
+          {user && (
+            <NewPostForm
+              user={user}
+              communityImageURL={currentCommunity?.photoURL}
+            />
+          )}
+        </>
         <>
           {currentCommunity ? (
             <AboutCommunity communityData={currentCommunity} />

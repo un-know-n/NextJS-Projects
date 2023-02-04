@@ -2,9 +2,22 @@ import { Post } from '@/atoms/posts.atom';
 import { firestore, storage } from '@/firebase/firebase.config';
 import { takeUserName } from '@/helpers/takeUserName';
 import { useSelectFile } from '@/hooks/useSelectFile';
-import { Alert, AlertDescription, AlertIcon, CloseButton, Flex, Icon } from '@chakra-ui/react';
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  CloseButton,
+  Flex,
+  Icon,
+} from '@chakra-ui/react';
 import { User } from 'firebase/auth';
-import { addDoc, collection, serverTimestamp, Timestamp, updateDoc } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  Timestamp,
+  updateDoc,
+} from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import React, { ChangeEvent, FC, useState } from 'react';
@@ -18,6 +31,7 @@ import { TabItem } from './TabItem';
 
 type TProps = {
   user: User;
+  communityImageURL?: string;
 };
 
 const formTabs: TTabItem[] = [
@@ -48,7 +62,7 @@ export type TTabItem = {
   icon: typeof Icon.arguments;
 };
 
-export const NewPostForm: FC<TProps> = ({ user }) => {
+export const NewPostForm: FC<TProps> = ({ user, communityImageURL }) => {
   const router = useRouter();
   const { onSelectFile, selectedFile, setSelectedFile } = useSelectFile();
 
@@ -67,8 +81,10 @@ export const NewPostForm: FC<TProps> = ({ user }) => {
     const { body, title } = textValues;
 
     // create new post object => type Post
+    // @ts-ignore
     const newPost: Post = {
       communityId: communityId as string,
+      communityImageURL: communityImageURL || '',
       creatorId: user?.uid,
       creatorDisplayName: userName,
       title: title,
