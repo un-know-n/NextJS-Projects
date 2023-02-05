@@ -33,7 +33,14 @@ type TProps = {
 };
 
 export const AboutCommunity: FC<TProps> = ({
-  communityData: { numberOfMembers, createdAt, photoURL, creatorId, id },
+  communityData: {
+    numberOfMembers,
+    createdAt,
+    photoURL,
+    creatorId,
+    id,
+    privacyType,
+  },
 }) => {
   const [user] = useAuthState(auth);
   const setCommunityState = useSetRecoilState(communityState);
@@ -86,11 +93,14 @@ export const AboutCommunity: FC<TProps> = ({
         color='white'
         p={3}
         borderRadius='4px 4px 0px 0px'>
-        <Text
-          fontSize='10pt'
-          fontWeight={700}>
-          About Community
-        </Text>
+        <Link href={`/c/${id}`}>
+          <Text
+            fontSize='10pt'
+            fontWeight={700}
+            color='white'>
+            {id}
+          </Text>
+        </Link>
         <Icon as={HiOutlineDotsHorizontal} />
       </Flex>
       <Flex

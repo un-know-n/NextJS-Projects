@@ -1,4 +1,5 @@
 import { Post } from '@/atoms/posts.atom';
+import { StillInDevelopment } from '@/components/shared/Banners/StillInDevelopment';
 import { firestore, storage } from '@/firebase/firebase.config';
 import { takeUserName } from '@/helpers/takeUserName';
 import { useSelectFile } from '@/hooks/useSelectFile';
@@ -166,6 +167,9 @@ export const NewPostForm: FC<TProps> = ({ user, communityImageURL }) => {
             setSelectedFile={setSelectedFile}
             setSelectedTab={setSelectedTab}
           />
+        ) : null}
+        {selectedTab !== 'Images & Video' && selectedTab !== 'Post' ? (
+          <StillInDevelopment />
         ) : null}
       </Flex>
       {error ? (

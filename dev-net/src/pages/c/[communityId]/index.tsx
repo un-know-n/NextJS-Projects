@@ -5,7 +5,9 @@ import { CreateCommunityPost } from '@/components/screens/Community/CreatePost/C
 import { CommunityHeader } from '@/components/screens/Community/Header/CommunityHeader';
 import { CommunityNotFound } from '@/components/screens/Community/NotFound/CommunityNotFound';
 import { Posts } from '@/components/screens/Community/Posts/Posts';
+import { Premium } from '@/components/screens/Home/PremiumComponent/Premium';
 import { firestore } from '@/firebase/firebase.config';
+import { Stack } from '@chakra-ui/react';
 import { doc, getDoc } from 'firebase/firestore';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -42,7 +44,10 @@ const CommunityPage: FC<TProps> = ({ communityData }) => {
           <Posts communityData={communityData} />
         </>
         <>
-          <AboutCommunity communityData={communityData} />
+          <Stack spacing={4}>
+            <AboutCommunity communityData={communityData} />
+            <Premium />
+          </Stack>
         </>
       </PageContent>
     </>

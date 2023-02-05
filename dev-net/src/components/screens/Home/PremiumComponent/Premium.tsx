@@ -1,10 +1,26 @@
+import { authModalState } from '@/atoms/authModal.atom';
+import { auth } from '@/firebase/firebase.config';
 import { Button, Flex, Icon, Stack, Text } from '@chakra-ui/react';
 import React, { FC } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { GiCheckedShield } from 'react-icons/gi';
+import { useSetRecoilState } from 'recoil';
 
 type TProps = {};
 
 export const Premium: FC<TProps> = () => {
+  const setModalState = useSetRecoilState(authModalState);
+  const [user] = useAuthState(auth);
+
+  const handleBuyPremium = () => {
+    if (!user) setModalState({ open: true, view: 'login' });
+    try {
+      // TODO: Stripe logic to buy premium
+    } catch (error) {
+      console.log('handleBuyPremium error', error);
+    }
+  };
+
   return (
     <Flex
       direction='column'

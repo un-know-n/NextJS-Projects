@@ -70,11 +70,6 @@ export const CommentItem: FC<TProps> = ({
             <>
               <Text
                 fontSize='10pt'
-                _hover={{ color: 'brand.100' }}>
-                Edit
-              </Text>
-              <Text
-                fontSize='10pt'
                 _hover={{ color: 'brand.100' }}
                 onClick={() => onDeleteComment(comment)}>
                 Delete

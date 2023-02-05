@@ -2,7 +2,9 @@ import { communityState } from '@/atoms/communities.atom';
 import { PageContent } from '@/components/layout/PageContent/PageContentLayout';
 import { AboutCommunity } from '@/components/screens/Community/About/About';
 import { NewPostForm } from '@/components/screens/Community/NewPostForm/NewPostForm';
+import { Premium } from '@/components/screens/Home/PremiumComponent/Premium';
 import { auth } from '@/firebase/firebase.config';
+import { Stack } from '@chakra-ui/react';
 import Head from 'next/head';
 import React from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -29,9 +31,12 @@ const SubmitPostPage = (props: Props) => {
           )}
         </>
         <>
-          {currentCommunity ? (
-            <AboutCommunity communityData={currentCommunity} />
-          ) : null}
+          <Stack spacing={4}>
+            {currentCommunity ? (
+              <AboutCommunity communityData={currentCommunity} />
+            ) : null}
+            <Premium />
+          </Stack>
         </>
       </PageContent>
     </>
