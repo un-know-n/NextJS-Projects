@@ -4,6 +4,9 @@ import { PageContent } from '@/components/layout/PageContent/PageContentLayout';
 import { CreateCommunityPost } from '@/components/screens/Community/CreatePost/CreateCommunityPost';
 import { PostItem } from '@/components/screens/Community/Posts/PostItem/PostItem';
 import { PostLoader } from '@/components/screens/Community/Posts/PostLoader/PostLoader';
+import { PersonalHome } from '@/components/screens/Home/PersonalHome/PersonalHome';
+import { Premium } from '@/components/screens/Home/PremiumComponent/Premium';
+import { TopCommunities } from '@/components/screens/Home/Recommendations/TopCommunities';
 import { auth, firestore } from '@/firebase/firebase.config';
 import { useCommunityData } from '@/hooks/useCommunityData';
 import { useDirectory } from '@/hooks/useDirectory';
@@ -158,7 +161,13 @@ export default function Home() {
             </Stack>
           )}
         </>
-        <>{/* Recommendations */}</>
+        <>
+          <Stack spacing={4}>
+            <TopCommunities />
+            <Premium />
+            <PersonalHome />
+          </Stack>
+        </>
       </PageContent>
     </>
   );
