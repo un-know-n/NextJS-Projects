@@ -151,6 +151,7 @@ export const PostItem: FC<TProps> = ({
                     alt='Community image'
                     borderRadius='full'
                     boxSize='18px'
+                    fit='cover'
                     mr={2}
                   />
                 ) : (

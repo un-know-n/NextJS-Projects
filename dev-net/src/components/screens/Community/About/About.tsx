@@ -58,14 +58,25 @@ export const AboutCommunity: FC<TProps> = ({
     try {
       // Take the ref of the place for image in the storage
       const imageRef = ref(storage, `communities/${id}/image`);
+
       // Upload current image to the firebase storage
       await uploadString(imageRef, selectedFile, 'data_url');
+
       // Take download url
       const downloadURL = await getDownloadURL(imageRef);
+
       // Update the document in the firestore
       await updateDoc(doc(firestore, 'communities', id), {
         photoURL: downloadURL,
       });
+
+      // Update user snippets
+      await updateDoc(
+        doc(firestore, `users/${user?.uid}/communitySnippets/${id}`),
+        {
+          photoURL: downloadURL,
+        },
+      );
 
       // Update local state
       setCommunityState((prev) => ({

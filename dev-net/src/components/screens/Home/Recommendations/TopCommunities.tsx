@@ -1,5 +1,5 @@
 import { Community } from '@/atoms/communities.atom';
-import { firestore } from '@/firebase/firebase.config';
+import { auth, firestore } from '@/firebase/firebase.config';
 import { useCommunityData } from '@/hooks/useCommunityData';
 import {
   Box,
@@ -15,11 +15,13 @@ import {
 import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore';
 import Link from 'next/link';
 import React, { FC, useEffect, useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { MdOutlineCodeOff } from 'react-icons/md';
 
 type TProps = {};
 
 export const TopCommunities: FC<TProps> = ({}) => {
+  const [user] = useAuthState(auth);
   const [topCommunities, setTopCommunities] = useState<Community[]>([]);
   const [loading, setLoading] = useState(false);
   const { communityStateValue, onJoinOrLeaveCommunity } = useCommunityData();
@@ -134,6 +136,7 @@ export const TopCommunities: FC<TProps> = ({}) => {
                             alt='Community image'
                             borderRadius='full'
                             boxSize='28px'
+                            fit='cover'
                             mr={2}
                           />
                         ) : (
@@ -156,19 +159,21 @@ export const TopCommunities: FC<TProps> = ({}) => {
                         </Link>
                       </Flex>
                     </Flex>
-                    <Box
-                      position='absolute'
-                      right='10px'>
-                      <Button
-                        height='22px'
-                        fontSize='8pt'
-                        variant={isJoined ? 'outline' : 'solid'}
-                        onClick={() =>
-                          onJoinOrLeaveCommunity(community, isJoined)
-                        }>
-                        {isJoined ? 'Joined' : 'Join'}
-                      </Button>
-                    </Box>
+                    {user ? (
+                      <Box
+                        position='absolute'
+                        right='10px'>
+                        <Button
+                          height='22px'
+                          fontSize='8pt'
+                          variant={isJoined ? 'outline' : 'solid'}
+                          onClick={() =>
+                            onJoinOrLeaveCommunity(community, isJoined)
+                          }>
+                          {isJoined ? 'Joined' : 'Join'}
+                        </Button>
+                      </Box>
+                    ) : null}
                   </Flex>
                 );
               })}

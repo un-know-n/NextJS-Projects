@@ -1,6 +1,16 @@
 import { useDirectory } from '@/hooks/useDirectory';
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Box, Flex, Icon, Image, Menu, MenuButton, MenuList, Text, useOutsideClick } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Icon,
+  Image,
+  Menu,
+  MenuButton,
+  MenuList,
+  Text,
+  useOutsideClick,
+} from '@chakra-ui/react';
 import React, { useRef } from 'react';
 
 import { Communities } from './Communities/Communities';
@@ -39,7 +49,7 @@ export const Directories = (props: Props) => {
                 mr={{ base: 1, md: 2 }}
                 boxSize='24px'
                 borderRadius='full'
-                fit='fill'
+                fit='cover'
               />
             ) : (
               <Icon

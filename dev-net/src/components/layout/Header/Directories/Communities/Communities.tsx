@@ -20,31 +20,33 @@ export const Communities = (props: Props) => {
         isOpen={open}
         handleClose={() => setOpen(false)}
       />
-      <Box
-        mt={3}
-        mb={4}>
-        <Text
-          pl={3}
-          mb={1}
-          fontSize='7pt'
-          fontWeight={500}
-          color='gray.500'
-          textTransform='uppercase'>
-          Moderating
-        </Text>
-        {mySnippets
-          .filter((snippet) => snippet.isModerator)
-          .map((snippet) => (
-            <CommunityItem
-              communityName={snippet.communityId}
-              icon={MdOutlineCodeOff}
-              iconColor='brand.200'
-              link={`/c/${snippet.communityId}`}
-              communityImageURL={snippet.photoURL}
-              key={snippet.communityId}
-            />
-          ))}
-      </Box>
+      {mySnippets.filter((snippet) => snippet.isModerator)[0] ? (
+        <Box
+          mt={3}
+          mb={4}>
+          <Text
+            pl={3}
+            mb={1}
+            fontSize='7pt'
+            fontWeight={500}
+            color='gray.500'
+            textTransform='uppercase'>
+            Moderating
+          </Text>
+          {mySnippets
+            .filter((snippet) => snippet.isModerator)
+            .map((snippet) => (
+              <CommunityItem
+                communityName={snippet.communityId}
+                icon={MdOutlineCodeOff}
+                iconColor='brand.200'
+                link={`/c/${snippet.communityId}`}
+                communityImageURL={snippet.photoURL}
+                key={snippet.communityId}
+              />
+            ))}
+        </Box>
+      ) : null}
       <Box
         mt={3}
         mb={4}>

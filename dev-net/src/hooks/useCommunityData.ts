@@ -52,7 +52,10 @@ export const useCommunityData = () => {
     isJoined: boolean,
   ) => {
     //Check if authorized, not - show auth modal
-    if (!user) setAuthModalState({ open: true, view: 'login' });
+    if (!user) {
+      setAuthModalState({ open: true, view: 'login' });
+      return;
+    }
 
     if (error) setError('');
 

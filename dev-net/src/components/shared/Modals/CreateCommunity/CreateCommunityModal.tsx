@@ -18,6 +18,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { doc, runTransaction, serverTimestamp } from 'firebase/firestore';
+import { useRouter } from 'next/router';
 import React, { ChangeEvent, FC, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { BsFillEyeFill, BsFillPersonFill } from 'react-icons/bs';
@@ -30,6 +31,8 @@ type TProps = {
 
 export const CreateCommunityModal: FC<TProps> = ({ handleClose, isOpen }) => {
   const [user] = useAuthState(auth);
+  const router = useRouter();
+
   const [communityName, setCommunityName] = useState('');
   const [charsRemaining, setCharsRemaining] = useState(21);
   const [communityType, setCommunityType] = useState('public');
@@ -72,7 +75,7 @@ export const CreateCommunityModal: FC<TProps> = ({ handleClose, isOpen }) => {
         const communityDoc = await transaction.get(communityDocRef);
 
         if (communityDoc.exists())
-          throw new Error(`Sorry, c:${name} is taken. Try another.`);
+          throw new Error(`Sorry, c:${communityName} is taken. Try another.`);
 
         //Create the community
         transaction.set(communityDocRef, {
@@ -91,6 +94,9 @@ export const CreateCommunityModal: FC<TProps> = ({ handleClose, isOpen }) => {
           },
         );
       });
+
+      handleClose();
+      router.push(`/c/${communityName}`);
     } catch (error: any) {
       console.log('handleCreateCommunity error', error);
       setCommunityError(error.message);

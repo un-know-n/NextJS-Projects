@@ -41,7 +41,7 @@ export const CommunityItem: FC<TProps> = ({
             borderRadius='full'
             boxSize='20px'
             mr={2}
-            fit='fill'
+            fit='cover'
           />
         ) : (
           <Icon
